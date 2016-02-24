@@ -9,6 +9,7 @@
 require 'nn'
 require 'cunn'
 require 'optim'
+require 'triplet'
 
 --[[
    1. Create Model
@@ -35,7 +36,7 @@ else
 end
 
 -- 2. Create Criterion
-criterion = nn.ClassNLLCriterion()
+criterion = nn.TripletCriterion(opt.nSamples, opt.nBlocks)
 
 print('=> Model')
 print(model)

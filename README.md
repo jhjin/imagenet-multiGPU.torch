@@ -1,3 +1,20 @@
+# Training Face identification network with triplet loss on multiple GPUs
+
+The work contains several training components required to train a FaceNet http://arxiv.org/abs/1503.03832
+on top of Soumith's multiGPU-training script https://github.com/soumith/imagenet-multiGPU.torch .
+Additional dependency is a triplet loss https://github.com/jhjin/triplet-criterion and is installable via luarocks
+
+```bash
+luarocks install https://raw.githubusercontent.com/jhjin/triplet-criterion/master/rocks/triplet-scm-1.rockspec
+```
+
+Please be aware that this branch is frequently rebased on the lastest upstream for convenient maintenance.
+Please expect to see forced pushes when you update this repository.
+
+For preprocessing, it is convenient to use the face alignment tool/binding if you are on Torch environment https://github.com/e-lab/torch-toolbox/tree/master/Face-align-Kazemi .
+And this script helps to split raw face datasets to training-compatible format (`train`/`val` split) https://gist.github.com/jhjin/07c164d2e553608fbb55 .
+
+
 ##Training an Object Classifier in Torch-7 on multiple GPUs over [ImageNet](http://image-net.org/download-images)
 
 In this concise example (1200 lines including a general-purpose and highly scalable data loader for images), we showcase:

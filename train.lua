@@ -97,7 +97,7 @@ function train()
       donkeys:addjob(
          -- the job callback (runs in data-worker thread)
          function()
-            local inputs, labels = trainLoader:sample(opt.batchSize)
+            local inputs, labels = trainLoader:sample(opt.batchSize, opt.nSamples, opt.nBlocks*opt.nSamples)
             return inputs, labels
          end,
          -- the end callback (runs in the main thread)
@@ -157,7 +157,8 @@ function trainBatch(inputsCPU, labelsCPU)
       outputs = model:forward(inputs)
       err = criterion:forward(outputs, labels)
       local gradOutputs = criterion:backward(outputs, labels)
-      model:backward(inputs, gradOutputs)
+      local nb_backwards = math.max(1, opt.nSamples-1)
+      model:backward(inputs, gradOutputs:view(nb_backwards, opt.batchSize, gradOutputs:size(2)):sum(1):squeeze())
       return err, gradParameters
    end
    optim.sgd(feval, parameters, optimState)
