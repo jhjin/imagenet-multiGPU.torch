@@ -70,15 +70,12 @@ function testBatch(inputsCPU, labelsCPU)
    local outputs = model:forward(inputs)
    local err = criterion:forward(outputs, labels)
    cutorch.synchronize()
-   local pred = outputs:float()
 
    loss = loss + err
 
-   local _, pred_sorted = pred:sort(2, true)
-   for i=1,pred:size(1) do
-      local g = labelsCPU[i]
-      if pred_sorted[i][1] == g then top1_center = top1_center + 1 end
-   end
+   local _, pred_max = outputs:max(2)
+   top1_center = top1_center + pred_max:eq(labels):sum()
+
    if batchNumber % 1024 == 0 then
       print(('Epoch: Testing [%d][%d/%d]'):format(epoch, batchNumber, nTest))
    end
